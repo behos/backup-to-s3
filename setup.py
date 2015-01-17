@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import setup
 import importlib
 import sys
 
 root_package_dir = 'packages'
-packages = find_packages(root_package_dir)
-main_package = 'backup-to-s3'
+main_package = 'backup_to_s3'
 
 name = 'backup-to-s3'
 description = 'An incremental backup to s3 service'
@@ -17,7 +16,8 @@ author_email = 'giorgos.georgiou@outlook.com'
 license = 'GPL'
 
 install_requires = [
-    'boto',
+    'boto==2.35.1',
+    'sqlalchemy==0.9.8'
 ]
 
 
@@ -34,7 +34,7 @@ setup(
     description=description,
     author=author,
     author_email=author_email,
-    packages=packages,
+    packages=[main_package],
     package_dir={'': root_package_dir},
     install_requires=install_requires,
     script_args=sys.argv[1:],
