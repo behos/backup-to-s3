@@ -1,0 +1,4 @@
+#!/bin/sh
+
+python -m unittest discover packages
+flake8 packages
