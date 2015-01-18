@@ -1,4 +1,4 @@
 #!/bin/sh
 
-python -m unittest discover packages
+python -m unittest discover packages -v
 flake8 packages
