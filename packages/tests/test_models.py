@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from packages.tests.util import DatabaseTestCase, get_valid_file_reference
-from models import FileReference, Snapshot
+from models import FileReference, Snapshot, FileReferenceInSnapshot
 from sqlalchemy.exc import IntegrityError
 
 
@@ -10,7 +10,7 @@ class TestFileReference(DatabaseTestCase):
         self.assertEqual('file_reference', FileReference.__tablename__)
 
     def test_table_has_id(self):
-        self.assertTrue(hasattr(FileReference(), 'id'))
+        self.assertTrue(hasattr(FileReference, 'id'))
 
     def test_file_reference_entry_can_be_created(self):
 
@@ -81,7 +81,7 @@ class TestSnapshot(DatabaseTestCase):
         self.assertEqual('snapshot', Snapshot.__tablename__)
 
     def test_table_has_id(self):
-        self.assertTrue(hasattr(Snapshot(), 'id'))
+        self.assertTrue(hasattr(Snapshot, 'id'))
 
     def test_datetime_is_set_to_now_by_default(self):
         snapshot = Snapshot()
@@ -94,3 +94,144 @@ class TestSnapshot(DatabaseTestCase):
         a_second_in_the_future = now + timedelta(seconds=1)
         self.assertGreater(snapshot.time, a_second_ago)
         self.assertGreater(a_second_in_the_future, snapshot.time)
+
+
+class TestFileReferenceInSnapshot(DatabaseTestCase):
+
+    def test_table_name_is_underscored(self):
+        self.assertEqual(
+            'file_reference_in_snapshot',
+            FileReferenceInSnapshot.__tablename__
+        )
+
+    def test_has_reference_to_a_snapshot_and_a_file(self):
+        self.assertTrue(hasattr(FileReferenceInSnapshot, "file_reference_id"))
+        self.assertTrue(hasattr(FileReferenceInSnapshot, "snapshot_id"))
+
+    def test_can_add_files_to_snapshot_directly(self):
+        file_reference = get_valid_file_reference()
+        another_file_reference = get_valid_file_reference()
+
+        snapshot = self.add_snapshot_to_database()
+
+        file_reference_in_snapshot = FileReferenceInSnapshot(
+            file_reference=file_reference,
+            snapshot=snapshot
+        )
+        another_file_reference_in_snapshot = FileReferenceInSnapshot(
+            file_reference=another_file_reference,
+            snapshot=snapshot
+        )
+
+        self.db_session.add_all(
+            [file_reference_in_snapshot, another_file_reference_in_snapshot]
+        )
+        self.assertEqual(2, self.db_session.query(FileReference).count())
+        self.assertEqual(
+            2,
+            self.db_session.query(FileReferenceInSnapshot).count()
+        )
+
+    def add_snapshot_to_database(self):
+        snapshot = Snapshot()
+        self.db_session.add(snapshot)
+        self.db_session.flush()
+        return snapshot
+
+    def test_can_add_files_to_snapshot_using_the_snapshot_model(self):
+        file_reference = get_valid_file_reference()
+        snapshot = self.add_snapshot_to_database()
+        snapshot.file_references.append(file_reference)
+
+        self.assertEqual(1, self.db_session.query(FileReference).count())
+        self.assertEqual(
+            1,
+            self.db_session.query(FileReferenceInSnapshot).count()
+        )
+
+    def test_can_get_files_in_snapshot_using_the_model(self):
+
+        file_reference = get_valid_file_reference()
+        another_file_reference = get_valid_file_reference()
+
+        snapshot = self.add_snapshot_to_database()
+
+        snapshot.file_references.append(file_reference)
+        snapshot.file_references.append(another_file_reference)
+
+        self.assertIn(file_reference, snapshot.file_references)
+        self.assertIn(another_file_reference, snapshot.file_references)
+
+    def test_deleting_the_snapshot_will_delete_the_associations(self):
+        file_reference = get_valid_file_reference()
+        another_file_reference = get_valid_file_reference()
+
+        snapshot = self.add_snapshot_to_database()
+
+        snapshot.file_references.append(file_reference)
+        snapshot.file_references.append(another_file_reference)
+
+        self.assertEqual(
+            2,
+            self.db_session.query(FileReferenceInSnapshot).count()
+        )
+
+        self.db_session.delete(snapshot)
+
+        self.assertEqual(
+            0,
+            self.db_session.query(FileReferenceInSnapshot).count()
+        )
+
+    def test_deleting_the_snapshot_will_not_delete_the_file_references(self):
+        file_reference = get_valid_file_reference()
+        another_file_reference = get_valid_file_reference()
+
+        snapshot = self.add_snapshot_to_database()
+
+        snapshot.file_references.append(file_reference)
+        snapshot.file_references.append(another_file_reference)
+
+        self.assertEqual(
+            2,
+            self.db_session.query(FileReference).count()
+        )
+
+        self.db_session.delete(snapshot)
+
+        self.assertEqual(
+            2,
+            self.db_session.query(FileReference).count()
+        )
+
+    def test_deleting_the_file_reference_will_delete_the_association(self):
+        file_reference = get_valid_file_reference()
+        snapshot = self.add_snapshot_to_database()
+
+        snapshot.file_references.append(file_reference)
+
+        self.assertEqual(
+            1,
+            self.db_session.query(FileReferenceInSnapshot).count()
+        )
+
+        self.db_session.delete(file_reference)
+
+        self.assertEqual(
+            0,
+            self.db_session.query(FileReferenceInSnapshot).count()
+        )
+
+    def test_deleting_the_association_wont_delete_snapshot_or_reference(self):
+        file_reference = get_valid_file_reference()
+        snapshot = self.add_snapshot_to_database()
+        file_reference_in_snapshot = FileReferenceInSnapshot(
+            file_reference=file_reference,
+            snapshot=snapshot
+        )
+
+        self.db_session.add(file_reference_in_snapshot)
+        self.db_session.flush()
+        self.db_session.delete(file_reference_in_snapshot)
+        self.assertEqual(1, self.db_session.query(FileReference).count())
+        self.assertEqual(1, self.db_session.query(Snapshot).count())
