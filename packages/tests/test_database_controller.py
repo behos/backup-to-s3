@@ -14,13 +14,13 @@ class TestDatabaseController(unittest.TestCase):
         self.test_directory = mkdtemp()
 
     def test_creates_database_on_initialisation(self):
-        with patch("models.Base.metadata.create_all") as mock_create_all:
+        with patch('models.Base.metadata.create_all') as mock_create_all:
             DatabaseController()
 
         assert mock_create_all.called, "Controller didn't create database"
 
     def get_test_db_path(self):
-        db_name = "db.sql"
+        db_name = 'db.sql'
         path_to_db = os.path.join(self.test_directory, db_name)
         return path_to_db
 
@@ -34,9 +34,9 @@ class TestDatabaseController(unittest.TestCase):
     def test_creates_engine_using_expected_path_in_sqlite_string(self):
 
         path_to_db = self.get_test_db_path()
-        expected_sql_connection_string = "sqlite:///%s" % path_to_db
+        expected_sql_connection_string = 'sqlite:///%s' % path_to_db
 
-        with patch("sqlalchemy.engine.create_engine") as mock_create_engine:
+        with patch('sqlalchemy.engine.create_engine') as mock_create_engine:
             DatabaseController(path_to_db)
 
         mock_create_engine.assert_was_called_with(
@@ -45,9 +45,9 @@ class TestDatabaseController(unittest.TestCase):
 
     def test_creates_in_memory_engine_by_default(self):
 
-        expected_sql_connection_string = "sqlite://"
+        expected_sql_connection_string = 'sqlite://'
 
-        with patch("sqlalchemy.engine.create_engine") as mock_create_engine:
+        with patch('sqlalchemy.engine.create_engine') as mock_create_engine:
             DatabaseController()
 
         mock_create_engine.assert_was_called_with(
@@ -57,7 +57,7 @@ class TestDatabaseController(unittest.TestCase):
     def test_creates_a_session_class_on_initialisation(self):
 
         controller = DatabaseController()
-        self.assertTrue(hasattr(controller, "Session"))
+        self.assertTrue(hasattr(controller, 'Session'))
 
     def tearDown(self):
         rmtree(self.test_directory)

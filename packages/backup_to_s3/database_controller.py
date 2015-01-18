@@ -11,7 +11,7 @@ class DatabaseController(object):
 
     def _connect(self, database_path):
         if database_path:
-            database_path = "/%s" % database_path
+            database_path = '/%s' % database_path
 
         self.db = create_engine('sqlite://' + database_path)
 
