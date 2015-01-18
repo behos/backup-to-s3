@@ -1,4 +1,3 @@
-from unittest.case import TestCase
 from uuid import uuid1
 from shutil import rmtree
 from database_controller import DatabaseController
@@ -6,13 +5,15 @@ from models import FileReference
 from tempfile import mkdtemp
 
 
-class DatabaseTestCase(TestCase):
+class DatabaseTestMixin(object):
 
     def setUp(self):
         self.db_session = DatabaseController().get_session()
+        super(DatabaseTestMixin, self).setUp()
 
     def tearDown(self):
         self.db_session.rollback()
+        super(DatabaseTestMixin, self).tearDown()
 
 
 class TestDirectoryTestCaseMixin(object):

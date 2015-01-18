@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
-from packages.tests.util import DatabaseTestCase, get_valid_file_reference
+from unittest.case import TestCase
+from packages.tests.util import DatabaseTestMixin, get_valid_file_reference
 from models import FileReference, Snapshot, FileReferenceInSnapshot
 from sqlalchemy.exc import IntegrityError
 
 
-class TestFileReference(DatabaseTestCase):
+class TestFileReference(DatabaseTestMixin, TestCase):
 
     def test_table_name_is_underscored(self):
         self.assertEqual('file_reference', FileReference.__tablename__)
@@ -76,7 +77,7 @@ class TestFileReference(DatabaseTestCase):
             self.db_session.flush()
 
 
-class TestSnapshot(DatabaseTestCase):
+class TestSnapshot(DatabaseTestMixin, TestCase):
     def test_table_name_is_underscored(self):
         self.assertEqual('snapshot', Snapshot.__tablename__)
 
@@ -96,7 +97,7 @@ class TestSnapshot(DatabaseTestCase):
         self.assertGreater(a_second_in_the_future, snapshot.time)
 
 
-class TestFileReferenceInSnapshot(DatabaseTestCase):
+class TestFileReferenceInSnapshot(DatabaseTestMixin, TestCase):
 
     def test_table_name_is_underscored(self):
         self.assertEqual(
