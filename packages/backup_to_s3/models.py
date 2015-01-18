@@ -1,7 +1,8 @@
+from datetime import datetime
 from inflection import underscore
 from sqlalchemy.ext.declarative.api import declared_attr, declarative_base
 from sqlalchemy.sql.schema import Column, UniqueConstraint
-from sqlalchemy.sql.sqltypes import String, Integer
+from sqlalchemy.sql.sqltypes import String, Integer, DateTime
 
 
 class Base(object):
@@ -26,3 +27,7 @@ class FileReference(Base):
     path = Column(String, index=True, nullable=False)
     backup_path = Column(String, unique=True, nullable=False)
     hash = Column(String, nullable=False)
+
+
+class Snapshot(Base):
+    time = Column(DateTime, nullable=False, default=datetime.utcnow())

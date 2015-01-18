@@ -1,5 +1,6 @@
+from datetime import datetime, timedelta
 from packages.tests.util import DatabaseTestCase, get_valid_file_reference
-from models import FileReference
+from models import FileReference, Snapshot
 from sqlalchemy.exc import IntegrityError
 
 
@@ -73,3 +74,23 @@ class TestFileReference(DatabaseTestCase):
         with self.assertRaises(IntegrityError):
             self.db_session.add(object_to_save)
             self.db_session.flush()
+
+
+class TestSnapshot(DatabaseTestCase):
+    def test_table_name_is_underscored(self):
+        self.assertEqual('snapshot', Snapshot.__tablename__)
+
+    def test_table_has_id(self):
+        self.assertTrue(hasattr(Snapshot(), 'id'))
+
+    def test_datetime_is_set_to_now_by_default(self):
+        snapshot = Snapshot()
+        self.assertIsNone(snapshot.time)
+        self.db_session.add(snapshot)
+        self.db_session.flush()
+
+        now = datetime.utcnow()
+        a_second_ago = now - timedelta(seconds=1)
+        a_second_in_the_future = now + timedelta(seconds=1)
+        self.assertGreater(snapshot.time, a_second_ago)
+        self.assertGreater(a_second_in_the_future, snapshot.time)
