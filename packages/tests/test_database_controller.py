@@ -1,6 +1,5 @@
 from unittest.case import TestCase
 from unittest.mock import patch
-import unittest
 from os.path import getsize, exists
 
 from database_controller import DatabaseController
