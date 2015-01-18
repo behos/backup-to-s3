@@ -13,12 +13,14 @@ class Base(object):
 
     __table_args__ = ({'sqlite_autoincrement': True},)
 
-    id = Column(Integer, primary_key=True)
-
 Base = declarative_base(cls=Base)
 
 
-class FileReference(Base):
+class IdMixin(object):
+    id = Column(Integer, primary_key=True)
+
+
+class FileReference(IdMixin, Base):
 
     @declared_attr
     def __table_args__(cls):
@@ -29,5 +31,5 @@ class FileReference(Base):
     hash = Column(String, nullable=False)
 
 
-class Snapshot(Base):
+class Snapshot(IdMixin, Base):
     time = Column(DateTime, nullable=False, default=datetime.utcnow())
