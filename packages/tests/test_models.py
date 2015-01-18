@@ -5,6 +5,12 @@ from sqlalchemy.exc import IntegrityError
 
 class TestFileReference(DatabaseTestCase):
 
+    def test_table_name_is_underscored(self):
+        self.assertEqual('file_reference', FileReference.__tablename__)
+
+    def test_table_has_id(self):
+        self.assertTrue(hasattr(FileReference(), 'id'))
+
     def test_file_reference_entry_can_be_created(self):
 
         self.assertEqual(0, self.db_session.query(FileReference).count())

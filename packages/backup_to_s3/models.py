@@ -1,21 +1,28 @@
-from sqlalchemy.ext.declarative.api import declarative_base
+from inflection import underscore
+from sqlalchemy.ext.declarative.api import declared_attr, declarative_base
 from sqlalchemy.sql.schema import Column, UniqueConstraint
 from sqlalchemy.sql.sqltypes import String, Integer
 
-Base = declarative_base()
+
+class Base(object):
+
+    @declared_attr
+    def __tablename__(cls):
+        return underscore(cls.__name__)
+
+    __table_args__ = ({'sqlite_autoincrement': True},)
+
+    id = Column(Integer, primary_key=True)
+
+Base = declarative_base(cls=Base)
 
 
 class FileReference(Base):
 
-    __tablename__ = "file_reference"
-    __table_args__ = (
-        UniqueConstraint('path', 'hash'),
-        {
-            'sqlite_autoincrement': True,
-        }
-    )
+    @declared_attr
+    def __table_args__(cls):
+        return (UniqueConstraint('path', 'hash'),) + Base.__table_args__
 
-    id = Column(Integer, primary_key=True)
     path = Column(String, index=True, nullable=False)
     backup_path = Column(String, unique=True, nullable=False)
     hash = Column(String, nullable=False)
