@@ -1,0 +1,2 @@
+class StorageDeviceError(RuntimeError):
+    pass
