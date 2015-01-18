@@ -1,7 +1,7 @@
 from unittest.case import TestCase
-import datetime
+from uuid import uuid1
 from database_controller import DatabaseController
-from models import BackedUpFile
+from models import FileReference
 
 
 class DatabaseTestCase(TestCase):
@@ -13,9 +13,13 @@ class DatabaseTestCase(TestCase):
         self.db_session.rollback()
 
 
-def get_valid_backed_up_file():
-    return BackedUpFile(
-        path="a_path",
-        last_backed_up_on=datetime.datetime.now(),
-        last_backed_up_hash="a file hash"
+def get_unique_string():
+    return str(uuid1())
+
+
+def get_valid_file_reference():
+    return FileReference(
+        path=get_unique_string(),
+        hash=get_unique_string(),
+        backup_path=get_unique_string()
     )

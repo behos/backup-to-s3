@@ -1,39 +1,66 @@
-from packages.tests.util import DatabaseTestCase, get_valid_backed_up_file
-from models import BackedUpFile
+from packages.tests.util import DatabaseTestCase, get_valid_file_reference
+from models import FileReference
 from sqlalchemy.exc import IntegrityError
 
 
-class TestBackedUpFile(DatabaseTestCase):
+class TestFileReference(DatabaseTestCase):
 
-    def test_backed_up_file_entry_can_be_created(self):
+    def test_file_reference_entry_can_be_created(self):
 
-        session = self.db_session
-        self.assertEqual(0, session.query(BackedUpFile).count())
-        backed_up_file = get_valid_backed_up_file()
+        self.assertEqual(0, self.db_session.query(FileReference).count())
+        file_reference = get_valid_file_reference()
 
-        session.add(backed_up_file)
-        self.assertEqual(1, session.query(BackedUpFile).count())
+        self.db_session.add(file_reference)
+        self.assertEqual(1, self.db_session.query(FileReference).count())
 
-    def test_date_is_required_to_add(self):
+    def test_backup_path_is_required_to_add(self):
 
-        backed_up_file_missing_date = get_valid_backed_up_file()
-        backed_up_file_missing_date.last_backed_up_on = None
+        file_missing_backup_path = get_valid_file_reference()
+        file_missing_backup_path.backup_path = None
 
-        self.assertSaveFailsWithIntegrityError(backed_up_file_missing_date)
+        self.assertSaveFailsWithIntegrityError(file_missing_backup_path)
 
     def test_path_is_required_to_add(self):
 
-        backed_up_file_missing_path = get_valid_backed_up_file()
-        backed_up_file_missing_path.path = None
+        file_missing_path = get_valid_file_reference()
+        file_missing_path.path = None
 
-        self.assertSaveFailsWithIntegrityError(backed_up_file_missing_path)
+        self.assertSaveFailsWithIntegrityError(file_missing_path)
 
     def test_hash_is_required_to_add(self):
 
-        backed_up_file_missing_hash = get_valid_backed_up_file()
-        backed_up_file_missing_hash.last_backed_up_hash = None
+        file_missing_hash = get_valid_file_reference()
+        file_missing_hash.hash = None
 
-        self.assertSaveFailsWithIntegrityError(backed_up_file_missing_hash)
+        self.assertSaveFailsWithIntegrityError(file_missing_hash)
+
+    def test_backup_path_must_be_unique(self):
+        first_file = get_valid_file_reference()
+        second_file = get_valid_file_reference()
+        second_file.backup_path = first_file.backup_path
+
+        self.db_session.add(first_file)
+
+        self.assertSaveFailsWithIntegrityError(second_file)
+
+    def test_must_have_unique_combination_of_hash_and_path(self):
+        first_file = get_valid_file_reference()
+        second_file = get_valid_file_reference()
+        second_file.path = first_file.path
+        second_file.hash = first_file.hash
+
+        self.db_session.add(first_file)
+        self.assertSaveFailsWithIntegrityError(second_file)
+
+    def test_can_save_same_path_if_hashes_differ(self):
+        self.assertEqual(0, self.db_session.query(FileReference).count())
+        first_file = get_valid_file_reference()
+        second_file = get_valid_file_reference()
+        second_file.path = first_file.path
+
+        self.db_session.add(first_file)
+        self.db_session.add(second_file)
+        self.assertEqual(2, self.db_session.query(FileReference).count())
 
     def assertSaveFailsWithIntegrityError(self, object_to_save):
 
