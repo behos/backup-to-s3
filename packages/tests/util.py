@@ -1,7 +1,9 @@
 from unittest.case import TestCase
 from uuid import uuid1
+from shutil import rmtree
 from database_controller import DatabaseController
 from models import FileReference
+from tempfile import mkdtemp
 
 
 class DatabaseTestCase(TestCase):
@@ -11,6 +13,17 @@ class DatabaseTestCase(TestCase):
 
     def tearDown(self):
         self.db_session.rollback()
+
+
+class TestDirectoryTestCaseMixin(object):
+
+    def setUp(self):
+        self.test_directory = mkdtemp()
+        super(TestDirectoryTestCaseMixin, self).setUp()
+
+    def tearDown(self):
+        rmtree(self.test_directory)
+        super(TestDirectoryTestCaseMixin, self).tearDown()
 
 
 def get_unique_string():

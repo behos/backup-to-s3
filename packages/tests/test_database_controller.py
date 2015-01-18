@@ -1,17 +1,14 @@
+from unittest.case import TestCase
 from unittest.mock import patch
 import unittest
 from os.path import getsize, exists
 
-from shutil import rmtree
 from database_controller import DatabaseController
-from tempfile import mkdtemp
 import os
+from packages.tests.util import TestDirectoryTestCaseMixin
 
 
-class TestDatabaseController(unittest.TestCase):
-
-    def setUp(self):
-        self.test_directory = mkdtemp()
+class TestDatabaseController(TestDirectoryTestCaseMixin, TestCase):
 
     def test_creates_database_on_initialisation(self):
         with patch('models.Base.metadata.create_all') as mock_create_all:
@@ -58,6 +55,3 @@ class TestDatabaseController(unittest.TestCase):
 
         controller = DatabaseController()
         self.assertTrue(hasattr(controller, 'Session'))
-
-    def tearDown(self):
-        rmtree(self.test_directory)
