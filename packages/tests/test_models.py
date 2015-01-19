@@ -91,10 +91,10 @@ class TestSnapshot(DatabaseTestMixin, TestCase):
         self.db_session.flush()
 
         now = datetime.utcnow()
-        a_second_ago = now - timedelta(seconds=10)
-        a_second_in_the_future = now + timedelta(seconds=10)
-        self.assertGreater(snapshot.time, a_second_ago)
-        self.assertGreater(a_second_in_the_future, snapshot.time)
+        a_moment_ago = now - timedelta(seconds=10)
+        a_moment_in_the_future = now + timedelta(seconds=10)
+        self.assertGreater(snapshot.time, a_moment_ago)
+        self.assertGreater(a_moment_in_the_future, snapshot.time)
 
 
 class TestFileReferenceInSnapshot(DatabaseTestMixin, TestCase):

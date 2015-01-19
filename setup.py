@@ -18,7 +18,9 @@ license = 'GPL'
 install_requires = [
     'boto==2.35.1',
     'sqlalchemy==0.9.8',
-    'inflection==0.2.1'
+    'inflection==0.2.1',
+    'pyyaml==3.11',
+    'FileChunkIO==1.6'
 ]
 
 

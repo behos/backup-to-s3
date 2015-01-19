@@ -1,9 +1,9 @@
 class StorageDevice(object):
 
-    def put(self, file, path):
+    def put(self, source_path, destination_path):
         raise NotImplementedError()
 
-    def get(self, path, to_path):
+    def get(self, path, destination_path):
         raise NotImplementedError()
 
     def exists(self, path):

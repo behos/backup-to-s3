@@ -1,4 +1,7 @@
+from unittest.case import skipUnless
 from uuid import uuid1
+
+from configuration import Configuration
 from random import randint
 from tempfile import NamedTemporaryFile
 import os
@@ -55,8 +58,7 @@ class StorageDeviceTestMixin(object):
             os.path.realpath(test_file.name)
         )
 
-        content = ''.join(['a' for i in range(size)])
-        test_file.write(bytes(content, 'UTF-8'))
+        test_file.truncate(size)
         test_file.close()
         return os.path.realpath(test_file.name)
 
@@ -106,9 +108,6 @@ class StorageDeviceTestMixin(object):
             )
 
         file_list = self.storage_device.list()
-        print(file_list)
-        print(expected_path)
-        print(other_expected_path)
 
         self.assertTrue(
             all(
@@ -131,3 +130,9 @@ class StorageDeviceTestMixin(object):
         for path in self.files_to_delete:
             os.remove(path)
         super(StorageDeviceTestMixin, self).tearDown()
+
+
+skipIfNotS3 = skipUnless(
+    's3_tests' in Configuration.get(),
+    'Skipping S3 tests because no configuration exists'
+)
