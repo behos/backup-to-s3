@@ -11,7 +11,7 @@ class TestDatabaseController(TempDirectoryTestMixin, TestCase):
 
     def test_creates_database_on_initialisation(self):
         with patch('models.Base.metadata.create_all') as mock_create_all:
-            DatabaseController()
+            DatabaseController.setup()
 
         assert mock_create_all.called, "Controller didn't create database"
 
@@ -23,7 +23,7 @@ class TestDatabaseController(TempDirectoryTestMixin, TestCase):
     def test_creates_database_file_in_path_if_passed(self):
         path_to_db = self.get_test_db_path()
 
-        DatabaseController(path_to_db)
+        DatabaseController.setup(path_to_db)
         self.assertTrue(exists(path_to_db))
         self.assertNotEqual(0, getsize(path_to_db))
 
@@ -33,7 +33,7 @@ class TestDatabaseController(TempDirectoryTestMixin, TestCase):
         expected_sql_connection_string = 'sqlite:///%s' % path_to_db
 
         with patch('sqlalchemy.engine.create_engine') as mock_create_engine:
-            DatabaseController(path_to_db)
+            DatabaseController.setup(path_to_db)
 
         mock_create_engine.assert_was_called_with(
             expected_sql_connection_string
@@ -49,8 +49,3 @@ class TestDatabaseController(TempDirectoryTestMixin, TestCase):
         mock_create_engine.assert_was_called_with(
             expected_sql_connection_string
         )
-
-    def test_creates_a_session_class_on_initialisation(self):
-
-        controller = DatabaseController()
-        self.assertTrue(hasattr(controller, 'Session'))

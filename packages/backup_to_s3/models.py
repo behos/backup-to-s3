@@ -3,6 +3,7 @@ from inflection import underscore
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative.api import declared_attr, declarative_base
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.sql.schema import Column, UniqueConstraint, ForeignKey
 from sqlalchemy.sql.sqltypes import String, Integer, DateTime
 
@@ -15,6 +16,7 @@ class Base(object):
 
     __table_args__ = ({'sqlite_autoincrement': True},)
 
+Session = sessionmaker()
 Base = declarative_base(cls=Base)
 
 

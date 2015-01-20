@@ -2,14 +2,15 @@ import os
 from uuid import uuid1
 from shutil import rmtree
 from database_controller import DatabaseController
-from models import FileReference
+from models import FileReference, Session
 from tempfile import mkdtemp, NamedTemporaryFile
 
 
 class DatabaseTestMixin(object):
 
     def setUp(self):
-        self.db_session = DatabaseController().get_session()
+        DatabaseController.setup()
+        self.db_session = Session()
         super(DatabaseTestMixin, self).setUp()
 
     def tearDown(self):
