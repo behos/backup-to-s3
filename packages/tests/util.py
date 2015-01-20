@@ -1,8 +1,9 @@
+import os
 from uuid import uuid1
 from shutil import rmtree
 from database_controller import DatabaseController
 from models import FileReference
-from tempfile import mkdtemp
+from tempfile import mkdtemp, NamedTemporaryFile
 
 
 class DatabaseTestMixin(object):
@@ -16,15 +17,37 @@ class DatabaseTestMixin(object):
         super(DatabaseTestMixin, self).tearDown()
 
 
-class TestDirectoryTestCaseMixin(object):
+class TempDirectoryTestMixin(object):
 
     def setUp(self):
         self.test_directory = mkdtemp()
-        super(TestDirectoryTestCaseMixin, self).setUp()
+        super(TempDirectoryTestMixin, self).setUp()
 
     def tearDown(self):
         rmtree(self.test_directory)
-        super(TestDirectoryTestCaseMixin, self).tearDown()
+        super(TempDirectoryTestMixin, self).tearDown()
+
+
+class TempFileTestMixin(object):
+
+    def setUp(self):
+        self.files_to_delete = []
+        super(TempFileTestMixin, self).setUp()
+
+    def create_test_file(self, size):
+        test_file = NamedTemporaryFile(delete=False)
+        self.files_to_delete.append(
+            os.path.realpath(test_file.name)
+        )
+
+        test_file.truncate(size)
+        test_file.close()
+        return os.path.realpath(test_file.name)
+
+    def tearDown(self):
+        for path in self.files_to_delete:
+            os.remove(path)
+        super(TempFileTestMixin, self).setUp()
 
 
 def get_unique_string():

@@ -2,15 +2,15 @@ from unittest.case import skipUnless
 from uuid import uuid1
 
 from configuration import Configuration
+from packages.tests.util import TempFileTestMixin
 from random import randint
 from tempfile import NamedTemporaryFile
 import os
 
 
-class StorageDeviceTestMixin(object):
+class StorageDeviceTestMixin(TempFileTestMixin):
 
     def setUp(self):
-        self.files_to_delete = []
         self.storage_device = self.get_storage_device()
         super(StorageDeviceTestMixin, self).setUp()
 
@@ -51,16 +51,6 @@ class StorageDeviceTestMixin(object):
         self.assertEqual(
             expected_size, self.storage_device.size(expected_path)
         )
-
-    def create_test_file(self, size):
-        test_file = NamedTemporaryFile(delete=False)
-        self.files_to_delete.append(
-            os.path.realpath(test_file.name)
-        )
-
-        test_file.truncate(size)
-        test_file.close()
-        return os.path.realpath(test_file.name)
 
     def test_can_get_file(self):
         test_file_path, expected_size, expected_path = \
@@ -125,11 +115,6 @@ class StorageDeviceTestMixin(object):
 
         with self.assertRaises(FileExistsError):
             self.storage_device.put(expected_file, expected_path)
-
-    def tearDown(self):
-        for path in self.files_to_delete:
-            os.remove(path)
-        super(StorageDeviceTestMixin, self).tearDown()
 
 
 skipIfNotS3 = skipUnless(

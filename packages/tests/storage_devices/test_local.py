@@ -1,13 +1,13 @@
 from unittest.case import TestCase
 import os
 from packages.tests.storage_devices.util import StorageDeviceTestMixin
-from packages.tests.util import TestDirectoryTestCaseMixin
+from packages.tests.util import TempDirectoryTestMixin
 from storage_devices.exceptions import StorageDeviceError
 from storage_devices.local import LocalStorageDevice
 
 
 class TestLocalStorageDevice(
-    TestDirectoryTestCaseMixin,
+    TempDirectoryTestMixin,
     StorageDeviceTestMixin,
     TestCase
 ):

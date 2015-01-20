@@ -4,10 +4,10 @@ from os.path import getsize, exists
 
 from database_controller import DatabaseController
 import os
-from packages.tests.util import TestDirectoryTestCaseMixin
+from packages.tests.util import TempDirectoryTestMixin
 
 
-class TestDatabaseController(TestDirectoryTestCaseMixin, TestCase):
+class TestDatabaseController(TempDirectoryTestMixin, TestCase):
 
     def test_creates_database_on_initialisation(self):
         with patch('models.Base.metadata.create_all') as mock_create_all:

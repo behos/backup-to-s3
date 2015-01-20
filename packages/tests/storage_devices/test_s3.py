@@ -3,7 +3,7 @@ from unittest.mock import patch
 from uuid import uuid1
 
 from tests.storage_devices.util import StorageDeviceTestMixin
-from tests.util import TestDirectoryTestCaseMixin
+from tests.util import TempDirectoryTestMixin
 
 from configuration import Configuration
 from packages.tests.storage_devices.util import skipIfNotS3
@@ -12,7 +12,7 @@ from storage_devices.s3 import S3StorageDevice
 
 @skipIfNotS3
 class TestS3StorageDevice(
-    TestDirectoryTestCaseMixin,
+    TempDirectoryTestMixin,
     StorageDeviceTestMixin,
     TestCase
 ):
