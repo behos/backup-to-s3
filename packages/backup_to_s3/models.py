@@ -28,11 +28,11 @@ class FileReference(IdMixin, Base):
 
     @declared_attr
     def __table_args__(cls):
-        return (UniqueConstraint('path', 'hash'),) + Base.__table_args__
+        return (UniqueConstraint('path', 'checksum'),) + Base.__table_args__
 
     path = Column(String, index=True, nullable=False)
     backup_path = Column(String, unique=True, nullable=False)
-    hash = Column(String, nullable=False)
+    checksum = Column(String, nullable=False)
 
 
 class Snapshot(IdMixin, Base):

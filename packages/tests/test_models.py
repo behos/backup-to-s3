@@ -35,12 +35,12 @@ class TestFileReference(DatabaseTestMixin, TestCase):
 
         self.assertSaveFailsWithIntegrityError(file_missing_path)
 
-    def test_hash_is_required_to_add(self):
+    def test_checksum_is_required_to_add(self):
 
-        file_missing_hash = get_valid_file_reference()
-        file_missing_hash.hash = None
+        file_missing_checksum = get_valid_file_reference()
+        file_missing_checksum.checksum = None
 
-        self.assertSaveFailsWithIntegrityError(file_missing_hash)
+        self.assertSaveFailsWithIntegrityError(file_missing_checksum)
 
     def test_backup_path_must_be_unique(self):
         first_file = get_valid_file_reference()
@@ -51,16 +51,16 @@ class TestFileReference(DatabaseTestMixin, TestCase):
 
         self.assertSaveFailsWithIntegrityError(second_file)
 
-    def test_must_have_unique_combination_of_hash_and_path(self):
+    def test_must_have_unique_combination_of_checksum_and_path(self):
         first_file = get_valid_file_reference()
         second_file = get_valid_file_reference()
         second_file.path = first_file.path
-        second_file.hash = first_file.hash
+        second_file.checksum = first_file.checksum
 
         self.db_session.add(first_file)
         self.assertSaveFailsWithIntegrityError(second_file)
 
-    def test_can_save_same_path_if_hashes_differ(self):
+    def test_can_save_same_path_if_checksums_differ(self):
         self.assertEqual(0, self.db_session.query(FileReference).count())
         first_file = get_valid_file_reference()
         second_file = get_valid_file_reference()

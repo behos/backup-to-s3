@@ -17,3 +17,6 @@ class StorageDevice(object):
 
     def delete(self, path):
         raise NotImplementedError()
+
+    def checksum(self, path):
+        raise NotImplementedError()

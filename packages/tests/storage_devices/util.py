@@ -29,11 +29,17 @@ class StorageDeviceTestMixin(TempFileTestMixin):
             expected_size, self.storage_device.size(expected_path)
         )
 
-    def put_file_to_storage_device(self, test_path=None):
+    def put_file_to_storage_device(
+            self,
+            test_path=None,
+            test_size=None
+    ):
         if not test_path:
             test_path = str(uuid1())
 
-        test_size = randint(2, 19)
+        if not test_size:
+            test_size = randint(2, 19)
+
         test_file_path = self.create_test_file(test_size)
         self.storage_device.put(test_file_path, test_path)
         return test_file_path, test_size, test_path
@@ -115,6 +121,18 @@ class StorageDeviceTestMixin(TempFileTestMixin):
 
         with self.assertRaises(FileExistsError):
             self.storage_device.put(expected_file, expected_path)
+
+    def test_can_get_file_checksum(self):
+        expected_file, expected_size, expected_path = \
+            self.put_file_to_storage_device(test_size=10)
+        self.assertEqual(
+            'a63c90cc3684ad8b0a2176a6a8fe9005',
+            self.storage_device.checksum(expected_path)
+        )
+
+    def test_raises_error_when_getting_checksum_for_missing_file(self):
+        with self.assertRaises(FileNotFoundError):
+            self.assertEqual('', self.storage_device.checksum("path"))
 
 
 skipIfNotS3 = skipUnless(

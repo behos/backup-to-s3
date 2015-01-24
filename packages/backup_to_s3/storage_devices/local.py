@@ -1,3 +1,4 @@
+import hashlib
 import os
 from shutil import copyfile
 from storage_devices.base import StorageDevice
@@ -73,3 +74,21 @@ class LocalStorageDevice(StorageDevice):
         if not self.exists(path):
             raise FileNotFoundError('Could not find file %s' % path)
         os.remove(self._get_absolute_path(path))
+
+    def checksum(self, path):
+        if not self.exists(path):
+            raise FileNotFoundError('Could not find file %s' % path)
+
+        return self._calculate_checksum(self._get_absolute_path(path))
+
+    def _calculate_checksum(self, path):
+        md5_hasher = hashlib.md5()
+        block_size = 65536
+
+        with open(path, 'rb') as file:
+            buffer = file.read(block_size)
+            while len(buffer) > 0:
+                md5_hasher.update(buffer)
+                buffer = file.read(65536)
+
+        return md5_hasher.hexdigest()

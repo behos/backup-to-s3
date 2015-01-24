@@ -58,6 +58,6 @@ def get_unique_string():
 def get_valid_file_reference():
     return FileReference(
         path=get_unique_string(),
-        hash=get_unique_string(),
+        checksum=get_unique_string(),
         backup_path=get_unique_string()
     )

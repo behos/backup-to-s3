@@ -74,3 +74,10 @@ class S3StorageDevice(object):
             key.delete()
         else:
             raise FileNotFoundError("Could not find key %s" % path)
+
+    def checksum(self, path):
+        if self.exists(path):
+            quoted_checksum = self.bucket.get_key(path).etag
+            return quoted_checksum.replace('"', '')
+        else:
+            raise FileNotFoundError("Could no find key %s" % path)
