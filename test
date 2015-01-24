@@ -1,4 +1,11 @@
 #!/bin/sh
 
-python -m unittest discover packages -v
+if [ $# -eq 0 ]
+  then
+  test=packages
+else
+    test="packages.tests.$1"
+fi
+
+python -m unittest discover $test -v
 flake8 packages
