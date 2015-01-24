@@ -35,7 +35,7 @@ class TempFileTestMixin(object):
         self.files_to_delete = []
         super(TempFileTestMixin, self).setUp()
 
-    def create_test_file(self, size):
+    def create_test_file(self, size=20):
         test_file = NamedTemporaryFile(delete=False)
         self.files_to_delete.append(
             os.path.realpath(test_file.name)
