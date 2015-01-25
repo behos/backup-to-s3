@@ -1,8 +1,10 @@
-from models import Snapshot, FileReference
+from unittest.case import TestCase
+
+from tests.util import DatabaseTestMixin
+
+from database.models import Snapshot, FileReference
 from os import makedirs
 import os
-from unittest.case import TestCase
-from tests.util import DatabaseTestMixin
 from packages.tests.util import TempFileTestMixin, TempDirectoryTestMixin
 from snapshot.taker import SnapshotTaker
 from storage_devices.local import LocalStorageDevice

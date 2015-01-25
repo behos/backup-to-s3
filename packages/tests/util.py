@@ -1,8 +1,9 @@
-import os
 from uuid import uuid1
+
+import os
 from shutil import rmtree
-from database_controller import DatabaseController
-from models import FileReference, Session
+from database.database_controller import DatabaseController
+from database.models import FileReference, Session
 from tempfile import mkdtemp, NamedTemporaryFile
 
 

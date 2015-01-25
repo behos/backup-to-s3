@@ -1,8 +1,8 @@
 from unittest.case import TestCase
 from unittest.mock import patch
-from os.path import getsize, exists
 
-from database_controller import DatabaseController
+from os.path import getsize, exists
+from database.database_controller import DatabaseController
 import os
 from packages.tests.util import TempDirectoryTestMixin
 
@@ -10,7 +10,8 @@ from packages.tests.util import TempDirectoryTestMixin
 class TestDatabaseController(TempDirectoryTestMixin, TestCase):
 
     def test_creates_database_on_initialisation(self):
-        with patch('models.Base.metadata.create_all') as mock_create_all:
+        with patch('database.models.Base.metadata.create_all') \
+                as mock_create_all:
             DatabaseController.setup()
 
         assert mock_create_all.called, "Controller didn't create database"

@@ -1,6 +1,6 @@
 import datetime
 
-from models import Snapshot, Session, FileReference
+from database.models import Snapshot, Session, FileReference
 import os
 from tempfile import NamedTemporaryFile
 

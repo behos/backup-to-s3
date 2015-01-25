@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 from unittest.case import TestCase
+
 from packages.tests.util import DatabaseTestMixin, get_valid_file_reference
-from models import FileReference, Snapshot, FileReferenceInSnapshot
+from database.models import FileReference, Snapshot, FileReferenceInSnapshot
 from sqlalchemy.exc import IntegrityError
 
 

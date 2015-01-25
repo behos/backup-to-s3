@@ -1,4 +1,4 @@
-from models import Session, Base
+from database.models import Session, Base
 from sqlalchemy.engine import create_engine
 
 
