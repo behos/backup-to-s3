@@ -2,7 +2,7 @@ from uuid import uuid1
 
 import os
 from shutil import rmtree
-from database.database_controller import DatabaseController
+from database.controller import DatabaseController
 from database.models import FileReference, Session
 from tempfile import mkdtemp, NamedTemporaryFile
 

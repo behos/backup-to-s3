@@ -2,7 +2,7 @@ from unittest.case import TestCase
 from unittest.mock import patch
 
 from os.path import getsize, exists
-from database.database_controller import DatabaseController
+from database.controller import DatabaseController
 import os
 from packages.tests.util import TempDirectoryTestMixin
 
