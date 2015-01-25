@@ -4,7 +4,7 @@ import os
 from unittest.case import TestCase
 from tests.util import DatabaseTestMixin
 from packages.tests.util import TempFileTestMixin, TempDirectoryTestMixin
-from snapshot.snapshot_taker import SnapshotTaker
+from snapshot.taker import SnapshotTaker
 from storage_devices.local import LocalStorageDevice
 
 
