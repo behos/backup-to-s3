@@ -1,6 +1,6 @@
 from unittest.case import TestCase
 from unittest.mock import patch
-from snapshot.configruation_reader import SnapshotConfigurationReader
+from snapshot.configuration_reader import SnapshotConfigurationReader
 from snapshot.exceptions import InvalidConfigurationError
 from storage_devices.local import LocalStorageDevice
 
