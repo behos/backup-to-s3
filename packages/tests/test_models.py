@@ -91,8 +91,8 @@ class TestSnapshot(DatabaseTestMixin, TestCase):
         self.db_session.flush()
 
         now = datetime.utcnow()
-        a_moment_ago = now - timedelta(seconds=10)
-        a_moment_in_the_future = now + timedelta(seconds=10)
+        a_moment_ago = now - timedelta(hours=1)
+        a_moment_in_the_future = now + timedelta(hours=1)
         self.assertGreater(snapshot.time, a_moment_ago)
         self.assertGreater(a_moment_in_the_future, snapshot.time)
 
