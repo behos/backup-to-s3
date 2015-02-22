@@ -1,26 +1,10 @@
 import datetime
 
 from database.models import Snapshot, Session, FileReference
-import os
-from tempfile import NamedTemporaryFile
+from snapshot.file_transporter import FileTransporter
 
 
-class SnapshotTaker(object):
-
-    def __init__(
-            self,
-            source_storage_device,
-            destination_storage_device
-    ):
-        self.source_storage_device = source_storage_device
-        self.destination_storage_device = destination_storage_device
-
-    def _transfer_file(self, source_path, destination_path):
-        temp_file = NamedTemporaryFile(delete=False)
-        temp_path = os.path.realpath(temp_file.name)
-        self.source_storage_device.get(source_path, temp_path)
-        self.destination_storage_device.put(temp_path, destination_path)
-        os.remove(temp_path)
+class SnapshotTaker(FileTransporter):
 
     def _get_session(self):
         if not hasattr(self, '_db_session'):
@@ -60,7 +44,7 @@ class SnapshotTaker(object):
 
     def _backup_file(self, path):
         backup_path = '%s_%s' % (path, datetime.datetime.now())
-        self._transfer_file(path, backup_path)
+        self.transfer_file(path, backup_path)
         return backup_path
 
     def _add_file_reference_to_database(self, path, checksum, backup_path):
