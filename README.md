@@ -33,6 +33,12 @@ If you have this package globally installed you can run it using
 
 This will perform the backup according to the configuration
 
+### Restoring a backup
+
+    python -m backup_to_s3 --restore
+
+This will show you a list of all the taken snapshots ordered by most recent. You can choose a snapshot to restore by entering its id
+
 ## Development
 
 ### virtualenv
